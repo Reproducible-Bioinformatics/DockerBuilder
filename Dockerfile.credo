@@ -12,7 +12,6 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends \
     curl \
     unzip \
     build-essential \
-    r-base \
     gfortran \
  && rm -rf /var/lib/apt/lists/* \
  && curl -fsSL --proto '=https' --tlsv1.2 "$CREDO_URL" -o credo.zip \
