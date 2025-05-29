@@ -1,6 +1,6 @@
-FROM credo/core:local
+FROM ghcr.io/credoproject/core:latest
 
+COPY credo_env /env
 WORKDIR /env
-COPY --from=builder /credo_env /env
 
-RUN credo apply
+RUN credo save
