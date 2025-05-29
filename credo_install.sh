@@ -11,5 +11,5 @@ credo pip numpy
 credo pip scikit-learn
 credo pip tensorflow
 credo pip jupyterlab
-
+credo save
 echo "✅ Done with credo pip commands."
