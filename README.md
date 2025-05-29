@@ -1,65 +1,46 @@
-# 🧪 Reproducible Docker Environment with CREDO (Two-Stage Build)
+# Reproducible Docker Environment with CREDO (Two-Stage Build from Official Base)
 
-This setup builds a reproducible and portable Docker image using [CREDO](https://github.com/CREDOProject/core), a tool for defining scientific environments in a declarative and shareable way. The process is split into **two stages** to separate the environment *construction* from the final *distribution*.
+This repository provides a reproducible and portable Docker environment using [CREDO](https://github.com/CREDOProject/core), starting from the official CREDO base image.
 
----
+The process is structured in two stages:
+- A builder stage (`Dockerfile.stage1`) that installs packages using `credo pip`.
+- A final image (`Dockerfile.final`) that applies and saves the environment for runtime usage.
 
-## 📂 File Overview
+## File Overview
 
-### `Dockerfile.stage1`
-This is the **builder stage**. It:
-- Installs CREDO from the official release.
-- Copies and executes `credo_install.sh`, which installs the desired packages using `credo pip`.
-- Saves the resulting environment under `/credo_env`.
+### Dockerfile.stage1
+- Starts from the official CREDO base image.
+- Copies and executes `credo_install.sh`, which installs packages using `credo pip`.
+- The environment is saved in `/credo_env`.
 
-### `Dockerfile.final`
-This is the **final runtime image**. It:
-- Starts from a fresh `ubuntu:24.04` base.
-- Installs only the minimal dependencies to run `credo apply` and `credo save`.
-- Copies the pre-installed environment from the builder stage.
-- Finalizes the environment by applying and saving it.
+### Dockerfile.final
+- Also based on the official CREDO base image.
+- Copies the environment from the builder stage.
+- Applies and saves the environment using `credo apply && credo save`.
 
-### `credo_install.sh`
-Shell script that runs `credo pip` to download and install packages into `/credo_env`. This is where you define your environment needs (e.g., `pandas`, `numpy`, `tensorflow`, etc.).
+### credo_install.sh
+A shell script listing the packages to install via `credo pip`. This is where the environment is defined.
 
-### `build_all.sh`
-Automation script to build the entire pipeline:
-1. Builds the `credo-stage1` image using `Dockerfile.stage1`.
-2. Builds the final image `credotest` using `Dockerfile.final`.
+### build_all.sh
+Build automation script that:
+1. Builds the stage1 image containing the environment definition.
+2. Builds the final image that applies and saves the environment.
 
----
+## Usage Instructions
 
-## 🚀 How to Use
-
-1. **Customize your environment**  
-   Modify `credo_install.sh` to list all required packages using `credo pip`.
-
-2. **Build both images**
+1. Modify `credo_install.sh` to specify the packages required for your analysis.
+2. Build both images by running:
    ```bash
    ./build_all.sh
    ```
-
-3. **Run your final image**
+3. Run the final image:
    ```bash
    docker run -it credotest
    ```
 
----
+## Advantages
 
-## ✅ Advantages of this setup
-
-- 📦 **Clean separation** of download/build vs runtime
-- 🚫 **No redundant downloading** in the final image
-- 🔁 **Reproducible and portable**, suitable for scientific analyses
-- 🌐 **Offline-capable** once the final image is built
-
----
-
-## 🧊 Optional Improvements
-
-- Use a `credo_requirements.txt` file for full decoupling of the package list.
-- Add volume mounting or `CMD` entries if you want to run analyses right inside the image.
-
----
-
-Happy science! 🧬🧫🔬
+- Based on the official CREDO base image to ensure consistency and reproducibility.
+- Clean separation between environment construction and usage.
+- Avoids redundant downloading when building the final image.
+- Suitable for portable and offline scientific workflows.

@@ -1,37 +1,6 @@
- FROM ubuntu:24.04 AS base
+FROM ghcr.io/credoproject/core:latest AS builder
 
-ENV DEBIAN_FRONTEND=noninteractive LANG="C.UTF-8"
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+WORKDIR /credo_env
+COPY credo_install.sh /credo_env/credo_install.sh
 
-FROM base AS builder
-
-WORKDIR /
-
-ARG CREDO_VERSION="v0.16.0"
-ARG CREDO_ARCH="amd64"
-ARG CREDO_URL="https://github.com/CREDOProject/core/releases/download/${CREDO_VERSION}/linux_${CREDO_ARCH}_credo.zip"
-
-RUN set -x \
- && apt-get update -yq --no-install-recommends \
- && apt-get install -yq --no-install-recommends \
-    ca-certificates \
-    curl \
-    unzip \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/* \
- && curl -fsSL --proto '=https' --tlsv1.2 "${CREDO_URL}" -o credo.zip \
- && unzip credo.zip \
- && rm -f credo.zip \
- && chmod +x credo
-
-FROM base AS final
-
-RUN apt-get update && apt-get install -yq --no-install-recommends \
-    build-essential \
-    r-base \
-    gfortran \
-    ca-certificates
-
-COPY --from=builder /credo /usr/bin/credo
-WORKDIR /workdir
-
+RUN chmod +x credo_install.sh && ./credo_install.sh

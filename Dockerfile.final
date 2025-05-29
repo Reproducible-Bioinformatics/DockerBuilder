@@ -1,9 +1,6 @@
-FROM credo-stage1
+FROM ghcr.io/credoproject/core:latest
 
-# Copia i pacchetti scaricati
-COPY credo_env /env
 WORKDIR /env
+COPY --from=builder /credo_env /env
 
-# Applica e salva l’environment
 RUN credo apply && credo save
-
