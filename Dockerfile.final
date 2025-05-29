@@ -1,4 +1,4 @@
-FROM ghcr.io/credoproject/core:latest
+FROM credo/core:local
 
 WORKDIR /env
 COPY --from=builder /credo_env /env
