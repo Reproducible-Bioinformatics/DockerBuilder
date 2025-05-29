@@ -1,17 +1,15 @@
 #!/bin/bash
 set -e
 
-if [[ "$(docker images -q credo/core:local 2> /dev/null)" == "" ]]; then
-  echo "🔧 Building base CREDO image (credo/core:local)..."
-  docker build -f Dockerfile.credo -t credo/core:local .
-else
-  echo "✅ Base image credo/core:local already exists. Skipping build."
-fi
-
 echo "🔧 Building stage1 Docker image with CREDO..."
 docker build -f Dockerfile.stage1 -t credo-stage1 .
 
-echo "📦 Building final image using packages from stage1..."
+echo "📤 Extracting /credo_env from stage1 image..."
+docker create --name tmp_container credo-stage1
+docker cp tmp_container:/credo_env ./credo_env
+docker rm tmp_container
+
+echo "📦 Building final image using local copy of credo_env..."
 docker build -f Dockerfile.final -t credotest .
 
 echo "✅ Final image 'credotest' built successfully."
