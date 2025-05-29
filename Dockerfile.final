@@ -1,0 +1,9 @@
+FROM credo-stage1
+
+# Copia i pacchetti scaricati
+COPY credo_env /env
+WORKDIR /env
+
+# Applica e salva l’environment
+RUN credo apply && credo save
+
