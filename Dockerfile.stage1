@@ -1,4 +1,4 @@
-FROM ghcr.io/credoproject/core:latest AS builder
+FROM ghcr.io/credoproject/core:v0.17.2-amd64 AS builder
 
 WORKDIR /credo_env
 COPY credo_install.sh /credo_env/credo_install.sh
