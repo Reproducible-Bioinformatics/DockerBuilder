@@ -1,6 +1,6 @@
-FROM ghcr.io/credoproject/core:latest
+FROM ghcr.io/credoproject/core:v0.17.2-amd64
+RUN apt-get update
+COPY credo_env /credo_env
+WORKDIR /credo_env
 
-COPY credo_env /env
-WORKDIR /env
-
-RUN credo save
+RUN credo apply
