@@ -1,7 +1,11 @@
-FROM ghcr.io/credoproject/core:v0.17.2-amd64
+FROM ghcr.io/credoproject/core:v0.19.0-amd64
 COPY credo_env /credo_env
 RUN apt-get update
 WORKDIR /credo_env
 
 RUN credo apply
-CMD ["jupyter", "lab", "--ip=0.0.0.0", "--allow-root", "--no-browser", "--NotebookApp.token=''", "--NotebookApp.password=''"]
+ENV R_LIBS_USER=/credo_env/credoenv/R-Library
+ENV VIRTUAL_ENV=/credo_env/credoenv/venv
+ENV PATH=/credo_env/credoenv/venv/bin:$PATH
+
+#CMD ["jupyter", "lab", "--ip=0.0.0.0", "--allow-root", "--no-browser", "--NotebookApp.token=''", "--NotebookApp.password=''"]
