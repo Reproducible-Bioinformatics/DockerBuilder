@@ -1,0 +1,4 @@
+pip jupyterlab
+pip pandas
+pip numpy
+cran Seurat
